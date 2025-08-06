@@ -1,99 +1,185 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FitBot</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            padding: 20px;
-        }
-        .chat-container {
-            background-color: white;
-            padding: 20px;
-            max-width: 600px;
-            margin: 0 auto;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .chat-box {
-            max-height: 400px;
-            overflow-y: auto;
-            margin-bottom: 20px;
-        }
-        .message {
-            margin: 10px 0;
-        }
-        .user-message {
-            text-align: right;
-        }
-        .bot-message {
-            text-align: left;
-        }
-        input[type="text"] {
-            width: calc(100% - 20px);
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        button {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FitBot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      padding: 20px;
+      text-align: center;
+    }
+    .chat-container {
+      background-color: white;
+      padding: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+      border-radius: 8px;
+
+    }
+    .chat-box {
+      max-height: 400px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .welcome {
+      margin: 20px;
+      padding: 10px;
+      font-size: 1em;
+      text-align: center;
+      color: #555;
+      border-radius: 5px;
+      opacity: 1;
+      transition: opacity 0.8s ease;
+    }
+    .hidden {
+      opacity: 0;
+      pointer-events: none;
+      height: 0;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+    }
+    .message {
+      margin: 10px 0;
+    }
+    .user-message {
+      text-align: right;
+    }
+    .bot-message {
+      text-align: left;
+      overflow: hidden;
+    }
+    .fallback_message {
+      text-align: center;
+      color: #ff4d4d;
+      font-weight: bold;
+      margin-top: 15px;
+      line-height: 1.6;
+    }
+    input[type="text"] {
+      width: calc(100% - 20px);
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    
+
+    /* Spinner Styles */
+    .spinner {
+      font-size: 24px;
+      animation: spin 2s linear infinite;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 40px; /* Optional: adds vertical space */
+      overflow: hidden; /* prevents scrollbars */
+      max-height: 40px; /* prevents growing too tall */
+    }
+
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+  
+
+  </style>
 </head>
 <body>
 
 <div class="chat-container">
-    <h2>Welcome to FitBot! 🏋️‍♀️</h2>
-    <div class="chat-box" id="chat-box"></div>
-    <input type="text" id="user-input" placeholder="Type a message..." />
-    <button onclick="sendMessage()">Send</button>
+  <h2> FitBot 🏋</h2>
+  <div id="welcome-message" class="welcome">
+    Step-by-step guidance on how to reach your goals!<br>
+    Type something you want to work on like building muscle, losing weight, or getting stronger; and I’ll help you get started!
+  </div>
+  <div class="chat-box" id="chat-box"></div>
+  <div id="loading" class="spinner" style="display: none;"></div>
+  <input type="text" id="user-input" placeholder="Type a message..." />
+  <button onclick="sendMessage()">Send</button>
 </div>
 
-<script>
-    function appendMessage(message, sender) {
-        let chatBox = document.getElementById('chat-box');
-        let messageDiv = document.createElement('div');
-        messageDiv.classList.add('message');
-        messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+  <script>
+    async function sendMessage() {
+      const userInput = document.getElementById('user-input').value.trim();
+      if (!userInput) return;
+
+      // Hide welcome message if visible
+      const welcomeMessage = document.getElementById('welcome-message');
+      if (welcomeMessage && !welcomeMessage.classList.contains('hidden')) {
+        welcomeMessage.classList.add('hidden');
+      }
+
+      appendMessage(userInput, 'user');
+      document.getElementById('user-input').value = "";
+
+      // Add loading spinner message
+      const spinnerId = appendMessage("<div class='spinner'>⏳</div>", 'bot', true, true);
+
+
+      // Wait 2 seconds before fetching response
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      try {
+        const response = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_input: userInput })
+        });
+        const data = await response.json();
+
+        // Replace spinner with bot response
+        updateMessage(spinnerId, data.response);
+      } catch (err) {
+        updateMessage(spinnerId, "❌ Error getting response.");
+      }
+    }
+
+    function appendMessage(message, sender, returnId = false, isHTML = false) {
+      const chatBox = document.getElementById('chat-box');
+      const messageDiv = document.createElement('div');
+      const id = `msg-${Date.now()}`;
+      messageDiv.id = id;
+      messageDiv.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
+
+      if (isHTML) {
+        messageDiv.innerHTML = message;
+      } else {
         messageDiv.innerText = message;
-        chatBox.appendChild(messageDiv);
-        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+
+      chatBox.appendChild(messageDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+      return returnId ? id : null;
     }
 
-    function sendMessage() {
-        let userInput = document.getElementById('user-input').value;
-        if (userInput.trim() !== "") {
-            appendMessage(userInput, 'user');
-            document.getElementById('user-input').value = "";
 
-            fetch("/chat", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    user_input: userInput // Properly format the input as JSON
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                appendMessage(data.response, 'bot');
-            });
-        }
+    function updateMessage(id, newText) {
+      const messageDiv = document.getElementById(id);
+      if (messageDiv) messageDiv.innerHTML = newText;
     }
-</script>
+
+  </script>
+
+
 
 </body>
 </html>

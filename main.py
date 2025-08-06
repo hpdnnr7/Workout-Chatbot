@@ -76,13 +76,19 @@ workout_plans = {
     "intermediate_gym": "Intermediate Gym:\n- Incline Bench 3x10\n- Barbell Rows 3x8\n- Walking Lunges 3x12\n- Cable Pushdowns 3x15",
 }
 
-fallback_message = ("Hmm, I’m not sure how to help with that yet. \n"
-                    "Here are some things you can ask me:\n"
-                    "• I want to lose weight but I don't have any equipment\n"
-                    "• I'm a beginner with no equipment\n"
-                    "• I'm advanced and have dumbbells\n"
-                    "• I want to build muscle and I have access to a gym\n"
-                    "• I just want to stay fit and I have dumbbells")
+fallback_message = (
+    "<div class='fallback-message'>"
+    "Hmm, I’m not sure how to help with that yet.<br><br>"
+    "Here are some things you can ask me:"
+    "<ul class='fallback-list'>"
+    "<li>I want to lose weight but I don't have any equipment</li>"
+    "<li>I'm a beginner with no equipment</li>"
+    "<li>I'm advanced and have dumbbells</li>"
+    "<li>I want to build muscle and I have access to a gym</li>"
+    "<li>I just want to stay fit and I have dumbbells</li>"
+    "</ul>"
+    "</div>"
+)
 
 # Vectorizer
 vectorizer = TfidfVectorizer(stop_words="english")
