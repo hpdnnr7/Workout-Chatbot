@@ -46,19 +46,19 @@
     .message {
       margin: 10px 0;
     }
-    .user-message {
-      text-align: right;
-    }
-    .bot-message {
-      text-align: left;
-      overflow: hidden;
-    }
     .fallback_message {
       text-align: center;
       color: #ff4d4d;
       font-weight: bold;
       margin-top: 15px;
       line-height: 1.6;
+    }
+    .fallback-list {
+      list-style-position: inside;
+      padding-left: 0;
+      margin: 10px auto;
+      display: inline-block;
+      text-align: left; 
     }
     input[type="text"] {
       width: calc(100% - 20px);
@@ -79,7 +79,44 @@
     button:hover {
       background-color: #218838;
     }
-    
+    .workout-box {
+      border: 2px solid #787878;  /* green border matching your theme */
+      border-radius: 8px;
+      padding: 15px;
+      margin: 15px auto;
+      max-width: 90%;
+      background-color: #f0f0f0; /* subtle light green background */
+      text-align: center;
+      white-space: normal;
+      
+    }
+
+    .user-message {
+        background-color: #007aff; /* iMessage blue */
+        color: white;
+        padding: 10px 14px;
+        border-radius: 18px;
+        display: inline-block;
+        max-width: 70%;
+        word-wrap: break-word;
+        margin: 8px 0;
+        float: right; /* Push to the right side */
+        clear: both;
+    }
+
+    .bot-message {
+        background-color: #e5e5ea; /* Light grey */
+        color: black;
+        padding: 10px 14px;
+        border-radius: 18px;
+        display: inline-block;
+        max-width: 70%;
+        word-wrap: break-word;
+        margin: 8px 0;
+        float: left; /* Push to the left side */
+        clear: both;
+    }
+
 
     /* Spinner Styles */
     .spinner {
@@ -122,7 +159,7 @@
       const userInput = document.getElementById('user-input').value.trim();
       if (!userInput) return;
 
-      // Hide welcome message if visible
+      // Hide welcome message
       const welcomeMessage = document.getElementById('welcome-message');
       if (welcomeMessage && !welcomeMessage.classList.contains('hidden')) {
         welcomeMessage.classList.add('hidden');
@@ -134,22 +171,36 @@
       // Add loading spinner message
       const spinnerId = appendMessage("<div class='spinner'>⏳</div>", 'bot', true, true);
 
-
-      // Wait 2 seconds before fetching response
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
       try {
+        // Delay for 2 seconds before fetch
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        // Timeout wrapper for fetch
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 10000); // 10 sec timeout
+
         const response = await fetch("/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ user_input: userInput })
+          body: JSON.stringify({ user_input: userInput }),
+          signal: controller.signal
         });
+
+        clearTimeout(timeout);
+
+        if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+
         const data = await response.json();
 
-        // Replace spinner with bot response
-        updateMessage(spinnerId, data.response);
+        if (!data.response || data.response.trim() === "") {
+          updateMessage(spinnerId, "🤔 I didn’t catch that. Could you rephrase?");
+        } else {
+          updateMessage(spinnerId, data.response);
+        }
+
       } catch (err) {
-        updateMessage(spinnerId, "❌ Error getting response.");
+        console.error("Fetch error:", err);
+        updateMessage(spinnerId, "❌ Error getting response. Please try again.");
       }
     }
 
