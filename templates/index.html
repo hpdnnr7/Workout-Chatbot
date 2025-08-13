@@ -207,8 +207,9 @@
     function appendMessage(message, sender, returnId = false, isHTML = false) {
       const chatBox = document.getElementById('chat-box');
       const messageDiv = document.createElement('div');
-      const id = `msg-${Date.now()}`;
+      const id = `msg-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
       messageDiv.id = id;
+
       messageDiv.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
 
       if (isHTML) {

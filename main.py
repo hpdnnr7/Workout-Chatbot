@@ -152,7 +152,17 @@ def chat():
                 f"{plan_html}"
                 "</div>"
             )
-
+        else:
+            # Suggest the user tries a workout goal
+            response += (
+                "<br><br>"
+                "<div class='suggestion-box'>"
+                "Want a full workout plan? Try giving me a workout goal — for example:<br><br>"
+                "<li>I want to lose weight<br>"
+                "<li>I want to build muscle</li>"
+                "<li>I want to increase flexibility</li>"
+                "</div>"
+            )
     return jsonify({"response": response})
 
 
