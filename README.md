@@ -23,11 +23,11 @@ User: I want to build muscle and I have access to a gym
 Bot: Focus on progressive overload and compound lifts like squats, bench, and deadlifts.
 Bot (Workout Plan):
 
-<Gym Muscle Builder:
+<pre>```Gym Muscle Builder:
 - Bench Press 3x8
 - Squats 3x8
 - Lat Pulldowns 3x10
-- Leg Press 3x10>
+- Leg Press 3x10>```</pre>
 
 
 If a user asks something without a workout plan (e.g., “mental health”), FitBot will provide a response and suggest trying another fitness-related question.
@@ -44,7 +44,7 @@ HTML/CSS/JavaScript – Frontend chat interface
 
 ## Getting Started
 
-# Prerequisites
+### Prerequisites
 
 Make sure you have Python 3 installed.
 
