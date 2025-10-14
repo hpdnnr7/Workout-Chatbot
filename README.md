@@ -56,16 +56,18 @@ Make sure you have Python 3 installed.
 
 1. Clone the repository:
 
-<pre>git clone <your-repo-url>
-cd <your-repo-folder> </pre>
+<pre>git clone https://github.com/hpdnnr7/Workout-Chatbot.git
+cd Workout-Chatbot </pre>
 
+2. Install dependencies
+<pre>pip install -r requirements.txt</pre>
 
-2. Run the Flask app:
+3. Run the Flask app:
 
 <pre>python main.py</pre>
 
 
-3. Open your browser or mobile device and go to:
+4. Open your browser or mobile device and go to:
 
 <pre>http://localhost:81</pre>
 
