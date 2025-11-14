@@ -1,0 +1,5 @@
+flask==3.0.0
+gunicorn==21.2.0
+scikit-learn==1.7.1
+numpy==2.3.2
+chatbot==1.5.2b0
