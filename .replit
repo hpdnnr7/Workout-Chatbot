@@ -1,6 +1,6 @@
 run = "python3 main.py"
 entrypoint = "main.py"
-modules = ["python-3.11"]
+modules = ["python-3.11.9"]
 
 hidden = [".pythonlibs"]
 
@@ -22,3 +22,10 @@ externalPort = 3001
 
 [[ports]]
 localPort = 5000
+
+[[ports]]
+localPort = 6000
+externalPort = 80
+
+[agent]
+expertMode = true

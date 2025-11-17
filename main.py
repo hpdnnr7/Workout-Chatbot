@@ -2,6 +2,8 @@ from flask import Flask, request, jsonify, render_template
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
+import os
+
 
 app = Flask(__name__)
 
@@ -145,13 +147,11 @@ def chat():
         plan = workout_plans.get(intent, None)
         if plan:
             plan_html = plan.replace("\n", "<br>")
-            response += (
-                "<br><br>"
-                "<div class='workout-box'>"
-                "Here's a workout plan I recommend:<br><br>"
-                f"{plan_html}"
-                "</div>"
-            )
+            response += ("<br><br>"
+                         "<div class='workout-box'>"
+                         "Here's a workout plan I recommend:<br><br>"
+                         f"{plan_html}"
+                         "</div>")
         else:
             # Suggest the user tries a workout goal
             response += (
@@ -161,10 +161,9 @@ def chat():
                 "<li>I want to lose weight<br>"
                 "<li>I want to build muscle</li>"
                 "<li>I want to increase flexibility</li>"
-                "</div>"
-            )
+                "</div>")
     return jsonify({"response": response})
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=81)
+    app.run(host='0.0.0.0', port=6000)
