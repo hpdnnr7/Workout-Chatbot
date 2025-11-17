@@ -84,3 +84,9 @@ cd Workout-Chatbot </pre>
 Here's a walkthrough of how the application works:
 
 <img src='fitbot.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+
+## Deployment
+
+The app is deployed on Render:
+[Live App Link](https://workout-chatbot.onrender.com/)
+
